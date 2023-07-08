@@ -2,6 +2,7 @@ use std::cmp::{max, Ordering};
 use crate::prices::{TIER0, TIER1, TIER2, TIER3, TIER4, TIER5};
 use serde::{Deserialize, Serialize};
 use std::io::{Result, stdin};
+use std::path::PathBuf;
 
 const UDEMY_DEF: f64 = 35.99;
 // Paperback costs in CAD for premium color ink with 42-828 pages
@@ -109,6 +110,21 @@ pub enum ProductType {
     // Paid material
     Publication,
     Udemy,
+}
+
+impl ProductType{
+    fn path() -> PathBuf{
+        PathBuf::from("products")
+    }
+    pub fn prod_path(&self) -> PathBuf{
+        match self{
+            ProductType::Article => Self::path().join("articles.json"),
+            ProductType::HowToGuide => Self::path().join("howtoguides.json"),
+            ProductType::CheatSheet => Self::path().join("cheatsheets.json"),
+            ProductType::Publication => Self::path().join("publications.json")
+            ProductType::Udemy => {}
+        }
+    }
 }
 
 impl Product {
