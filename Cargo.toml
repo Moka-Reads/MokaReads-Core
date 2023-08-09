@@ -6,16 +6,14 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[[bench]]
-name = "parsers"
-harness = false
 
 [dependencies]
 pulldown-cmark = "0.9.3"
 serde = { version = "1.0.182", features = ["derive"] }
 serde_yaml = "0.9.25"
-
+mokareads_macros = { path = "mokareads-macros" }
 [dev-dependencies]
 criterion = { version = "0.5.1", features = ["html_reports"] }
 lipsum = "0.9.0"
+
 
