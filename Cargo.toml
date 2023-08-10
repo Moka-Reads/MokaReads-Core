@@ -9,8 +9,8 @@ edition = "2021"
 
 [dependencies]
 pulldown-cmark = "0.9.3"
-serde = { version = "1.0.182", features = ["derive"] }
-serde_yaml = "0.9.25"
+serde = { version = "1", features = ["derive"] }
+serde_yaml = "0.9"
 mokareads_macros = { path = "mokareads-macros" }
 [dev-dependencies]
 criterion = { version = "0.5.1", features = ["html_reports"] }
