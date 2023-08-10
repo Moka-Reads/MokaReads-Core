@@ -1,0 +1,28 @@
+[book]
+authors = ["Mustafif"]
+language = "en"
+multilingual = false
+src = "src"
+title = "MoKa Reads Core Lib"
+description = "A guide to the MoKa Reads Core Lib"
+
+[output.html]
+default-theme = "Rust" # looks like a latte palette
+git-repository-url = "https://github.com/Moka-Reads/GuideTemplate"
+git-repository-icon = "fa-github"
+curly-quotes = true
+mathjax-support = false
+copy-fonts = true
+no-section-label = false
+
+[output.html.playground]
+editable = false         # allows editing the source code
+copyable = true          # include the copy button for copying code snippets
+copy-js = true           # includes the JavaScript for the code editor
+line-numbers = false     # displays line numbers for editable code
+runnable = true          # displays a run button for rust code
+
+
+[output.pdf]
+paper-size = "a4"  # Paper size for PDF output
+print-background = false  # Set to true to print background in PDF
