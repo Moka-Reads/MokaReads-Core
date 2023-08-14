@@ -3,13 +3,13 @@ use serde::{Deserialize, Serialize};
 use serde_yaml::from_str;
 use super::Parser as ArticleParser;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Article {
     metadata: Metadata,
     pub slug: String,
     content: String,
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Metadata {
     title: String,
     description: String,
