@@ -12,6 +12,8 @@ pulldown-cmark = "0.9.3"
 serde = { version = "1", features = ["derive"] }
 serde_yaml = "0.9"
 mokareads_macros = { path = "mokareads-macros" }
+rss = "2.0.4"
+chrono = "0.4.26"
 [dev-dependencies]
 criterion = { version = "0.5.1", features = ["html_reports"] }
 lipsum = "0.9.0"

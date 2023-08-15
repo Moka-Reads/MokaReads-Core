@@ -49,13 +49,13 @@ impl CheatsheetParser for Cheatsheet{
         let content_section = sections.next().unwrap_or("");
 
         let mut metadata = serde_yaml::from_str::<Metadata>(yaml_section).unwrap();
-        if let None = Level::from_u8(metadata.level){
+        if Level::from_u8(metadata.level).is_none(){
             metadata.level = 1;
         }
-        let parser = Parser::new_ext(&content_section, Options::all());
+        let parser = Parser::new_ext(content_section, Options::all());
         let mut html_output = String::new();
         html::push_html(&mut html_output, parser);
-        let slug = metadata.title.replace(" ", "_");
+        let slug = metadata.title.replace(' ', "_");
         Self {
             metadata,
             slug,
@@ -78,6 +78,7 @@ pub enum Language{
 }
 
 impl Language{
+    #[allow(clippy::should_implement_trait)]
     pub fn from_str(s: &str) -> Language{
         match s{
             "kotlin" => Language::Kotlin,
@@ -93,13 +94,13 @@ impl Language{
     }
 }
 
-fn get_lang_vec(lang: Language, cheatsheets: &Vec<Cheatsheet>) -> Vec<Cheatsheet>{
+fn get_lang_vec(lang: Language, cheatsheets: &[Cheatsheet]) -> Vec<Cheatsheet>{
     cheatsheets.iter().filter(|x|{
         Language::from_str(&x.metadata.lang) == lang
     }).cloned().collect()
 }
 
-pub fn get_lang_map(cheatsheets: &Vec<Cheatsheet>) -> HashMap<Language, Vec<Cheatsheet>>{
+pub fn get_lang_map(cheatsheets: &[Cheatsheet]) -> HashMap<Language, Vec<Cheatsheet>>{
     let mut map = HashMap::new();
     let lang_vec: Vec<Language> = Language::all_variants();
     for lang in lang_vec{
@@ -110,7 +111,7 @@ pub fn get_lang_map(cheatsheets: &Vec<Cheatsheet>) -> HashMap<Language, Vec<Chea
     map
 }
 
-fn sort_cheatsheets(cheatsheets: &mut Vec<Cheatsheet>){
+fn sort_cheatsheets(cheatsheets: &mut [Cheatsheet]){
     cheatsheets.sort_by(
         |a, b|{
             let lev_a = Level::from_u8(a.metadata.level).unwrap();

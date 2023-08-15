@@ -10,3 +10,4 @@ All code is under the GPLv2 License (LICENSE.md).
 
 pub mod bench;
 pub mod resources;
+pub use rss::*;
