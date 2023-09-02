@@ -1,2 +1,4 @@
 /target
 /Cargo.lock
+listings-rust.sty
+examples/latex_example*
