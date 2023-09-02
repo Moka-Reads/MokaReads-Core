@@ -67,6 +67,12 @@ pub struct AwesomeList{
     page_list: Vec<Vec<Repository>>
 }
 
+impl Default for AwesomeList{
+    fn default() -> Self {
+        Self{page_list: Vec::new()}
+    }
+}
+
 impl AwesomeList{
     /// Get a list of repos for each page which we would want
     pub async fn new(pages: usize) -> Result<Self>{
