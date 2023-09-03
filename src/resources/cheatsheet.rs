@@ -12,6 +12,29 @@ pub struct Cheatsheet {
     content: String,
 }
 
+/// Used for creating a new cheatsheet file
+impl Cheatsheet {
+    pub fn new(metadata: Metadata, content: String) -> Self {
+        let slug = metadata.title.replace(' ', "_");
+        Self {
+            metadata,
+            slug,
+            content,
+        }
+    }
+    pub fn to_markdown(&self) -> String {
+        let mut parts = Vec::new();
+        parts.push("---".to_string());
+        let metadata = serde_yaml::to_string(&self.metadata).unwrap();
+        parts.push(metadata);
+        parts.push("---".to_string());
+
+        parts.push(self.content.to_string());
+
+        parts.join("\n")
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Default)]
 pub struct Metadata {
     title: String,
@@ -19,6 +42,18 @@ pub struct Metadata {
     level: u8,
     lang: String,
     icon: String,
+}
+
+impl Metadata {
+    pub fn new(title: &str, author: &str, level: u8, lang: &str, icon: &str) -> Self {
+        Self {
+            title: title.to_string(),
+            author: author.to_string(),
+            level,
+            lang: lang.to_string(),
+            icon: icon.to_string(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Ord, PartialOrd, Eq, PartialEq)]
