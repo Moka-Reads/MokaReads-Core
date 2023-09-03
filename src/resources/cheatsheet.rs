@@ -33,6 +33,9 @@ impl Cheatsheet {
 
         parts.join("\n")
     }
+    pub fn lang(&self) -> String{
+        self.metadata.lang.clone()
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Default)]
