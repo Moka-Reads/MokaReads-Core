@@ -63,17 +63,9 @@ impl Repository {
 }
 
 /// A wrapper over a list of list of repos :)
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct AwesomeList {
     page_list: Vec<Vec<Repository>>,
-}
-
-impl Default for AwesomeList {
-    fn default() -> Self {
-        Self {
-            page_list: Vec::new(),
-        }
-    }
 }
 
 impl AwesomeList {
