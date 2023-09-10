@@ -12,10 +12,10 @@ pub trait Parser {
         Self: Sized;
 }
 
-use serde::{Deserialize, Serialize};
 use article::Article;
 use cheatsheet::Cheatsheet;
 use guide::Guide;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct Cacher {
@@ -47,7 +47,7 @@ impl Cacher {
     }
 }
 
-impl From<String> for Cacher{
+impl From<String> for Cacher {
     fn from(value: String) -> Self {
         serde_json::from_str(&value).unwrap_or_default()
     }
