@@ -8,13 +8,13 @@ various MoKa Reads application/tools.
 All code is under the GPLv2 License (LICENSE.md).
  */
 
+/// Awesome Lists of various topics in GitHub
+pub mod awesome_lists;
 #[cfg(feature = "experimental")]
 /// This is still experimental
 pub mod latex;
 /// The different MoKa Reads Resources
 pub mod resources;
-/// Awesome Lists of various topics in GitHub
-pub mod awesome_lists;
 
 pub use rss::*;
 /// A generic Result type

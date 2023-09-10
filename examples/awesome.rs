@@ -1,7 +1,7 @@
-use std::error::Error;
 use mokareads_core::awesome_lists::{AwesomeList, Repository};
+use std::error::Error;
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>>{
+async fn main() -> Result<(), Box<dyn Error>> {
     // each page contains 30 repositories
     // so let's try to get the first 150
     let pages = 5;

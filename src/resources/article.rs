@@ -21,6 +21,20 @@ pub struct Metadata {
     tags: String,
 }
 
+impl Metadata {
+    pub fn new(title: &str, description: &str, author: &str, icon: &str, tags: &str) -> Self {
+        let date = Utc::now().date_naive().format("YYYY-MM-DD").to_string();
+        Self {
+            title: title.to_string(),
+            description: description.to_string(),
+            author: author.to_string(),
+            icon: icon.to_string(),
+            date,
+            tags: tags.to_string(),
+        }
+    }
+}
+
 impl ArticleParser for Article {
     fn parse(markdown: &str) -> Self
     where
@@ -63,6 +77,22 @@ impl Article {
         );
         item.set_pub_date(self.metadata.date.clone());
         item
+    }
+    pub fn new(metadata: Metadata, content: String) -> Self {
+        let slug = metadata.title.replace(' ', "_");
+        Self {
+            metadata,
+            slug,
+            content,
+        }
+    }
+    pub fn to_markdown(&self) -> String {
+        let mut markdown = String::new();
+        markdown.push_str("---\n");
+        markdown.push_str(&serde_yaml::to_string(&self.metadata).unwrap());
+        markdown.push_str("---\n");
+        markdown.push_str(&self.content);
+        markdown
     }
 }
 

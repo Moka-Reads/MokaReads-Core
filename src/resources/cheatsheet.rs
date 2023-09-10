@@ -33,7 +33,7 @@ impl Cheatsheet {
 
         parts.join("\n")
     }
-    pub fn lang(&self) -> String{
+    pub fn lang(&self) -> String {
         self.metadata.lang.clone()
     }
 }

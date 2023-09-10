@@ -11,3 +11,13 @@ pub trait Parser {
     where
         Self: Sized;
 }
+
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
+pub struct Cacher {
+    updated_at: String,
+    articles: Vec<article::Article>,
+    cheatsheets: Vec<cheatsheet::Cheatsheet>,
+    guides: Vec<guide::Guide>,
+}
