@@ -79,7 +79,7 @@ impl Level {
 }
 
 impl CheatsheetParser for Cheatsheet {
-    fn parse(markdown: &str) -> Self
+    fn parse_raw(markdown: &str) -> Self
     where
         Self: Sized,
     {
@@ -93,14 +93,33 @@ impl CheatsheetParser for Cheatsheet {
         if Level::from_u8(metadata.level).is_none() {
             metadata.level = 1;
         }
-        let parser = Parser::new_ext(content_section, Options::all());
-        let mut html_output = String::new();
-        html::push_html(&mut html_output, parser);
         let slug = metadata.title.replace(' ', "_");
         Self {
-            metadata,
+            metadata: metadata.clone(),
             slug,
-            content: html_output,
+            content: content_section.to_string(),
+        }
+    }
+
+    fn parse(markdown: &str) -> Self
+    where
+        Self: Sized,
+    {
+        let mut cheatsheet = Self::parse_raw(markdown);
+        let parser = Parser::new_ext(cheatsheet.content.as_str(), Options::all());
+        let mut html_output = String::new();
+        html::push_html(&mut html_output, parser);
+        cheatsheet.content = html_output;
+        cheatsheet
+    }
+    fn raw_to_parsed(&self) -> Self where Self: Sized {
+        let parser = Parser::new_ext(&self.content, Options::all());
+        let mut html_output = String::new();
+        html::push_html(&mut html_output, parser);
+        Self{
+            metadata: self.metadata.clone(),
+            slug: self.slug.to_string(),
+            content: html_output
         }
     }
 }

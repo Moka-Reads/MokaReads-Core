@@ -7,7 +7,16 @@ pub mod guide;
 
 /// Parses MarkDown to a type
 pub trait Parser {
+    /// Parses the markdown file and keeps the markdown content
+    fn parse_raw(markdown: &str) -> Self
+    where
+        Self: Sized;
+    /// Parses the markdown file and parses the markdown content to html
     fn parse(markdown: &str) -> Self
+    where
+        Self: Sized;
+    /// Converts a `raw` version to a `parsed` version.
+    fn raw_to_parsed(&self) -> Self
     where
         Self: Sized;
 }

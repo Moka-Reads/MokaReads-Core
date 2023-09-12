@@ -3,7 +3,6 @@ use chrono::Utc;
 use pulldown_cmark::{html, Options, Parser};
 use rss::Item;
 use serde::{Deserialize, Serialize};
-use serde_yaml::from_str;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Article {
@@ -36,7 +35,7 @@ impl Metadata {
 }
 
 impl ArticleParser for Article {
-    fn parse(markdown: &str) -> Self
+    fn parse_raw(markdown: &str) -> Self
     where
         Self: Sized,
     {
@@ -46,15 +45,34 @@ impl ArticleParser for Article {
         let yaml_section = sections.next().unwrap_or("");
         let content_section = sections.next().unwrap_or("");
 
-        let metadata = from_str::<Metadata>(yaml_section).unwrap();
-        let parser = Parser::new_ext(content_section, Options::all());
-        let mut html_output = String::new();
-        html::push_html(&mut html_output, parser);
+        let metadata = serde_yaml::from_str::<Metadata>(yaml_section).unwrap();
         let slug = metadata.title.replace(' ', "_");
         Self {
-            metadata,
+            metadata: metadata.clone(),
             slug,
-            content: html_output,
+            content: content_section.to_string(),
+        }
+    }
+
+    fn parse(markdown: &str) -> Self
+    where
+        Self: Sized,
+    {
+        let mut article = Self::parse_raw(markdown);
+        let parser = Parser::new_ext(article.content.as_str(), Options::all());
+        let mut html_output = String::new();
+        html::push_html(&mut html_output, parser);
+        article.content = html_output;
+        article
+    }
+    fn raw_to_parsed(&self) -> Self where Self: Sized {
+        let parser = Parser::new_ext(&self.content, Options::all());
+        let mut html_output = String::new();
+        html::push_html(&mut html_output, parser);
+        Self{
+            metadata: self.metadata.clone(),
+            slug: self.slug.to_string(),
+            content: html_output
         }
     }
 }
