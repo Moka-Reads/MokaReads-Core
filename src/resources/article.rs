@@ -22,7 +22,7 @@ pub struct Metadata {
 
 impl Metadata {
     pub fn new(title: &str, description: &str, author: &str, icon: &str, tags: &str) -> Self {
-        let date = Utc::now().date_naive().format("YYYY-MM-DD").to_string();
+        let date = Utc::now().naive_utc().format("%Y-%m-%d").to_string();
         Self {
             title: title.to_string(),
             description: description.to_string(),
