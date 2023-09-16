@@ -65,14 +65,17 @@ impl ArticleParser for Article {
         article.content = html_output;
         article
     }
-    fn raw_to_parsed(&self) -> Self where Self: Sized {
+    fn raw_to_parsed(&self) -> Self
+    where
+        Self: Sized,
+    {
         let parser = Parser::new_ext(&self.content, Options::all());
         let mut html_output = String::new();
         html::push_html(&mut html_output, parser);
-        Self{
+        Self {
             metadata: self.metadata.clone(),
             slug: self.slug.to_string(),
-            content: html_output
+            content: html_output,
         }
     }
 }

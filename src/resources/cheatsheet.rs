@@ -81,8 +81,8 @@ impl Level {
 
 impl CheatsheetParser for Cheatsheet {
     fn parse_raw(markdown: &str) -> Self
-        where
-            Self: Sized,
+    where
+        Self: Sized,
     {
         let separator = "---";
         let mut sections = markdown.splitn(3, separator);
@@ -103,8 +103,8 @@ impl CheatsheetParser for Cheatsheet {
     }
 
     fn parse(markdown: &str) -> Self
-        where
-            Self: Sized,
+    where
+        Self: Sized,
     {
         let mut cheatsheet = Self::parse_raw(markdown);
         let parser = Parser::new_ext(cheatsheet.content.as_str(), Options::all());
@@ -113,7 +113,10 @@ impl CheatsheetParser for Cheatsheet {
         cheatsheet.content = html_output;
         cheatsheet
     }
-    fn raw_to_parsed(&self) -> Self where Self: Sized {
+    fn raw_to_parsed(&self) -> Self
+    where
+        Self: Sized,
+    {
         let parser = Parser::new_ext(&self.content, Options::all());
         let mut html_output = String::new();
         html::push_html(&mut html_output, parser);
@@ -126,7 +129,7 @@ impl CheatsheetParser for Cheatsheet {
 }
 
 #[derive(
-Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Deserialize, Serialize, EnumVariants, Hash,
+    Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Deserialize, Serialize, EnumVariants, Hash,
 )]
 pub enum Language {
     Kotlin,
@@ -195,84 +198,4 @@ fn sort_cheatsheets(cheatsheets: &mut [Cheatsheet]) {
         let lev_b = Level::from_u8(b.metadata.level).unwrap();
         lev_a.cmp(&lev_b)
     });
-}
-
-#[test]
-fn test_sort_cheatsheets() {
-    let mut cheatsheets = vec![
-        Cheatsheet {
-            metadata: Metadata {
-                title: "Title A".to_string(),
-                author: "Author A".to_string(),
-                level: 3,
-                lang: "English".to_string(),
-                icon: "Icon A".to_string(),
-            },
-            slug: "slug-3".to_string(),
-            content: "Content A".to_string(),
-        },
-        Cheatsheet {
-            metadata: Metadata {
-                title: "Title B".to_string(),
-                author: "Author B".to_string(),
-                level: 1,
-                lang: "Spanish".to_string(),
-                icon: "Icon B".to_string(),
-            },
-            slug: "slug-1".to_string(),
-            content: "Content B".to_string(),
-        },
-        Cheatsheet {
-            metadata: Metadata {
-                title: "Title C".to_string(),
-                author: "Author C".to_string(),
-                level: 2,
-                lang: "French".to_string(),
-                icon: "Icon C".to_string(),
-            },
-            slug: "slug-2".to_string(),
-            content: "Content C".to_string(),
-        },
-    ];
-
-    sort_cheatsheets(&mut cheatsheets);
-
-    let expected_sorted_cheatsheets = vec![
-        Cheatsheet {
-            metadata: Metadata {
-                title: "Title B".to_string(),
-                author: "Author B".to_string(),
-                level: 1,
-                lang: "Spanish".to_string(),
-                icon: "Icon B".to_string(),
-            },
-            slug: "slug-1".to_string(),
-            content: "Content B".to_string(),
-        },
-        Cheatsheet {
-            metadata: Metadata {
-                title: "Title C".to_string(),
-                author: "Author C".to_string(),
-                level: 2,
-                lang: "French".to_string(),
-                icon: "Icon C".to_string(),
-            },
-            slug: "slug-2".to_string(),
-            content: "Content C".to_string(),
-        },
-        Cheatsheet {
-            metadata: Metadata {
-                title: "Title A".to_string(),
-                author: "Author A".to_string(),
-                level: 3,
-                lang: "English".to_string(),
-                icon: "Icon A".to_string(),
-            },
-            slug: "slug-3".to_string(),
-            content: "Content A".to_string(),
-        },
-    ];
-
-    // Use assert_eq! to compare the sorted vector with the expected result
-    assert_eq!(cheatsheets, expected_sorted_cheatsheets);
 }

@@ -1,7 +1,10 @@
-use mokareads_core::awesome_lists::AwesomeList;
-use mokareads_core::Result;
 use std::thread::sleep;
 use std::time::Duration;
+
+use rocket::tokio;
+
+use mokareads_core::awesome_lists::AwesomeList;
+use mokareads_core::Result;
 
 const PAGES: [usize; 4] = [10, 20, 30, 40];
 

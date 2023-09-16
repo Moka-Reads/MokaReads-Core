@@ -1,5 +1,8 @@
-use mokareads_core::latex::{build, BuildType};
 use std::path::PathBuf;
+
+use rocket::tokio;
+
+use mokareads_core::latex::{build, BuildType};
 
 const MD: &str = r#"---
 title: Tester
@@ -26,22 +29,22 @@ async fn main() {
         PathBuf::from("examples"),
         BuildType::TeX,
     )
-    .await
-    .unwrap();
+        .await
+        .unwrap();
     build(
         MD,
         "latex_example",
         PathBuf::from("examples"),
         BuildType::PDF,
     )
-    .await
-    .unwrap();
+        .await
+        .unwrap();
     build(
         MD,
         "latex_example_rs",
         PathBuf::from("examples"),
         BuildType::PdfRustStyling,
     )
-    .await
-    .unwrap();
+        .await
+        .unwrap();
 }
