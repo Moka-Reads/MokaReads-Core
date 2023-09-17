@@ -37,6 +37,9 @@ impl Cheatsheet {
     pub fn lang(&self) -> String {
         self.metadata.lang.clone()
     }
+    pub fn title(&self) -> String{
+        self.metadata.title.to_string()
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Default)]

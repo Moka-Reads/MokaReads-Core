@@ -115,6 +115,9 @@ impl Article {
         markdown.push_str(&self.content);
         markdown
     }
+    pub fn title(&self) -> String{
+        self.metadata.title.to_string()
+    }
 }
 
 pub fn articles_rss(articles: Vec<Article>) -> rss::Channel {
