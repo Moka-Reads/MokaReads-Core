@@ -1,6 +1,8 @@
 use rocket::response::Redirect;
 use serde::{Deserialize, Serialize};
 
+use crate::resources::{ResourceType, SearchMetadata};
+
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Guide {
     pub repo_name: String,
@@ -22,5 +24,11 @@ impl Guide {
     pub fn redirect(&self) -> Redirect {
         let address = self.addy.to_string();
         Redirect::to(address)
+    }
+    pub fn link_short(&self) -> String {
+        format!("/guides/{}", self.repo_name)
+    }
+    pub fn as_search_meta(&self) -> SearchMetadata {
+        SearchMetadata::new(self.unslug.clone(), ResourceType::Guide, self.link_short())
     }
 }

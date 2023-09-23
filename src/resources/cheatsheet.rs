@@ -1,10 +1,14 @@
 use std::collections::HashMap;
+use std::fmt::{Display, Formatter};
 
 use mokareads_macros::EnumVariants;
 use pulldown_cmark::{html, Options, Parser};
 use serde::{Deserialize, Serialize};
 
+use crate::resources::ResourceType;
+
 use super::Parser as CheatsheetParser;
+use super::SearchMetadata;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
 pub struct Cheatsheet {
@@ -37,8 +41,12 @@ impl Cheatsheet {
     pub fn lang(&self) -> String {
         self.metadata.lang.clone()
     }
-    pub fn title(&self) -> String{
+    pub fn title(&self) -> String {
         self.metadata.title.to_string()
+    }
+    pub fn link_short(&self) -> String { format!("/cheatsheets/{}", &self.slug) }
+    pub fn as_search_meta(&self) -> SearchMetadata {
+        SearchMetadata::new(self.title(), ResourceType::Cheatsheet, self.link_short())
     }
 }
 
@@ -84,8 +92,8 @@ impl Level {
 
 impl CheatsheetParser for Cheatsheet {
     fn parse_raw(markdown: &str) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         let separator = "---";
         let mut sections = markdown.splitn(3, separator);
@@ -106,8 +114,8 @@ impl CheatsheetParser for Cheatsheet {
     }
 
     fn parse(markdown: &str) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         let mut cheatsheet = Self::parse_raw(markdown);
         let parser = Parser::new_ext(cheatsheet.content.as_str(), Options::all());
@@ -117,8 +125,8 @@ impl CheatsheetParser for Cheatsheet {
         cheatsheet
     }
     fn raw_to_parsed(&self) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         let parser = Parser::new_ext(&self.content, Options::all());
         let mut html_output = String::new();
@@ -132,7 +140,7 @@ impl CheatsheetParser for Cheatsheet {
 }
 
 #[derive(
-    Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Deserialize, Serialize, EnumVariants, Hash,
+Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Deserialize, Serialize, EnumVariants, Hash,
 )]
 pub enum Language {
     Kotlin,
@@ -173,6 +181,23 @@ impl Language {
             Language::Go => "devicon-go-original-wordmark".to_string(),
             Language::Other => "devicon-github-original".to_string(),
         }
+    }
+}
+
+impl Display for Language {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Language::Kotlin => "kotlin",
+            Language::Rust => "rust",
+            Language::C => "c",
+            Language::CPP => "c++",
+            Language::Zig => "zig",
+            Language::Python => "python",
+            Language::Swift => "swift",
+            Language::Go => "go",
+            Language::Other => "other",
+        };
+        write!(f, "{}", s)
     }
 }
 

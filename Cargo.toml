@@ -1,6 +1,6 @@
 [package]
 name = "mokareads-core"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 authors = ["Mustafif Khan <mustafif0929@gmail.com>", "MoKa Reads <help@mokareads.org>"]
 description = "The Core Library for MoKa Reads Software"
@@ -39,4 +39,9 @@ rayon = "1.7.0"
 lipsum = "0.9.0"
 rand = "0.8.5"
 
-
+# Build optimizations
+[profile.release]
+lto = true
+strip = true
+panic = "abort"
+codegen-units = 1

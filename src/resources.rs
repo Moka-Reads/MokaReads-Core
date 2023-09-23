@@ -1,3 +1,14 @@
+use std::collections::HashMap;
+use std::str::FromStr;
+
+use serde::{Deserialize, Serialize};
+
+use article::Article;
+use cheatsheet::Cheatsheet;
+use guide::Guide;
+
+use crate::resources::cheatsheet::{get_lang_map, Language};
+
 /// MoKa Reads Article
 pub mod article;
 /// MoKa Reads Cheatsheets
@@ -9,23 +20,19 @@ pub mod guide;
 pub trait Parser {
     /// Parses the markdown file and keeps the markdown content
     fn parse_raw(markdown: &str) -> Self
-    where
-        Self: Sized;
+        where
+            Self: Sized;
     /// Parses the markdown file and parses the markdown content to html
     fn parse(markdown: &str) -> Self
-    where
-        Self: Sized;
+        where
+            Self: Sized;
     /// Converts a `raw` version to a `parsed` version.
     fn raw_to_parsed(&self) -> Self
-    where
-        Self: Sized;
+        where
+            Self: Sized;
 }
 
-use article::Article;
-use cheatsheet::Cheatsheet;
-use guide::Guide;
-use serde::{Deserialize, Serialize};
-
+/// A type to store all different resources with a time of update to show when resources were last cached
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct Cacher {
     updated_at: String,
@@ -33,6 +40,123 @@ pub struct Cacher {
     cheatsheets: Vec<Cheatsheet>,
     guides: Vec<Guide>,
 }
+
+#[derive(Debug, Copy, Clone, Deserialize, Serialize, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub enum ResourceType {
+    Article,
+    Cheatsheet,
+    Guide,
+}
+
+impl FromStr for ResourceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "article" => Ok(ResourceType::Article),
+            "cheatsheet" => Ok(ResourceType::Cheatsheet),
+            "guide" => Ok(ResourceType::Guide),
+            _ => Err(()),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct SearchMetadata {
+    title: String,
+    ty: ResourceType,
+    link: String,
+}
+
+impl SearchMetadata {
+    pub fn new(title: String, ty: ResourceType, link: String) -> Self {
+        Self { title, ty, link }
+    }
+}
+
+/// Hashmaps for quick navigation
+/// A user will be able to search for something under the following conditions:
+/// - Language of Focus
+/// - Title of Resource
+/// - Resource Type
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Searcher {
+    langs: HashMap<Language, Vec<SearchMetadata>>,
+    titles: HashMap<String, Vec<SearchMetadata>>,
+    rty: HashMap<ResourceType, Vec<SearchMetadata>>,
+}
+
+impl Searcher {
+    pub fn new(cacher: &Cacher) -> Self {
+        let mut langs = HashMap::new();
+        let mut titles = HashMap::new();
+        let mut rty = HashMap::new();
+
+        let mut titles_chain: Vec<String> = cacher.articles
+            .iter()
+            .map(|x| x.title())
+            .chain(cacher.cheatsheets.iter().map(|x| x.title()))
+            .chain(cacher.guides.iter().map(|x| x.unslug.clone()))
+            .collect();
+        titles_chain.sort(); // sorts the titles chain
+        titles_chain.dedup(); // removes repeats
+
+        let lang_vec = Language::all_variants();
+        let lang_map_cheatsheets = get_lang_map(&cacher.cheatsheets);
+
+        for lang in lang_vec {
+            let mut search_metas = Vec::new();
+            let cheatsheet = lang_map_cheatsheets.get(&lang).unwrap_or(&Vec::new()).clone();
+            let csm: Vec<SearchMetadata> = cheatsheet.iter().map(|x| x.as_search_meta()).collect();
+            search_metas.clone_from(&csm);
+
+            let mut asm: Vec<SearchMetadata> = cacher.articles.iter().filter(|x| x.lang_in_tag(lang)).map(|x| x.as_search_meta()).collect();
+            search_metas.append(&mut asm);
+
+            let _ = langs.insert(lang, search_metas);
+        }
+
+        for title in titles_chain {
+            let mut search_metas = Vec::new();
+
+            let csm: Vec<SearchMetadata> = cacher.cheatsheets.iter().filter(|x| &x.title() == &title).map(|x| x.as_search_meta()).collect();
+            search_metas.clone_from(&csm);
+
+            let mut asm: Vec<SearchMetadata> = cacher.articles.iter().filter(|x| &x.title() == &title).map(|x| x.as_search_meta()).collect();
+            search_metas.append(&mut asm);
+
+            let mut gsm: Vec<SearchMetadata> = cacher.guides.iter().filter(|x| &x.unslug == &title).map(|x| x.as_search_meta()).collect();
+            search_metas.append(&mut gsm);
+
+            let _ = titles.insert(title, search_metas);
+        }
+
+        let csm = cacher.cheatsheets.iter().map(|x| x.as_search_meta()).collect::<Vec<SearchMetadata>>();
+        let _ = rty.insert(ResourceType::Cheatsheet, csm);
+
+        let asm = cacher.articles.iter().map(|x| x.as_search_meta()).collect::<Vec<SearchMetadata>>();
+        let _ = rty.insert(ResourceType::Article, asm);
+
+        let gsm = cacher.guides.iter().map(|x| x.as_search_meta()).collect::<Vec<SearchMetadata>>();
+        let _ = rty.insert(ResourceType::Guide, gsm);
+
+
+        Self { langs, titles, rty }
+    }
+    pub fn search(&self, input: String) -> Vec<SearchMetadata> {
+        let lowercase_input = input.to_lowercase();
+        let lang_input = Language::from_str(&lowercase_input);
+        if let Some(metadata) = self.titles.get(&input) {
+            return metadata.clone();
+        } else if let Some(metadata) = self.langs.get(&lang_input) {
+            return metadata.clone();
+        } else if let Some(metadata) = self.rty.get(&ResourceType::from_str(&lowercase_input).unwrap()) {
+            return metadata.clone();
+        }
+
+        Vec::new()
+    }
+}
+
 
 impl Cacher {
     pub fn new(articles: Vec<Article>, cheatsheets: Vec<Cheatsheet>, guides: Vec<Guide>) -> Self {
