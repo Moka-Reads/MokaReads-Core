@@ -29,22 +29,22 @@ async fn main() {
         PathBuf::from("examples"),
         BuildType::TeX,
     )
-        .await
-        .unwrap();
+    .await
+    .unwrap();
     build(
         MD,
         "latex_example",
         PathBuf::from("examples"),
         BuildType::PDF,
     )
-        .await
-        .unwrap();
+    .await
+    .unwrap();
     build(
         MD,
         "latex_example_rs",
         PathBuf::from("examples"),
         BuildType::PdfRustStyling,
     )
-        .await
-        .unwrap();
+    .await
+    .unwrap();
 }

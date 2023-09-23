@@ -91,57 +91,86 @@ impl Searcher {
         let mut titles = HashMap::new();
         let mut rty = HashMap::new();
 
-        let mut titles_chain: Vec<String> = cacher.articles
+        // Collect unique titles from various sources
+        let mut titles_chain: Vec<String> = cacher
+            .articles
             .iter()
             .map(|x| x.title())
             .chain(cacher.cheatsheets.iter().map(|x| x.title()))
             .chain(cacher.guides.iter().map(|x| x.unslug.clone()))
             .collect();
-        titles_chain.sort(); // sorts the titles chain
-        titles_chain.dedup(); // removes repeats
+        titles_chain.sort();
+        titles_chain.dedup();
 
+        // Generate search metadata for different languages
         let lang_vec = Language::all_variants();
         let lang_map_cheatsheets = get_lang_map(&cacher.cheatsheets);
 
         for lang in lang_vec {
-            let mut search_metas = Vec::new();
-            let cheatsheet = lang_map_cheatsheets.get(&lang).unwrap_or(&Vec::new()).clone();
-            let csm: Vec<SearchMetadata> = cheatsheet.iter().map(|x| x.as_search_meta()).collect();
-            search_metas.clone_from(&csm);
+            let cheatsheet = lang_map_cheatsheets.get(&lang).unwrap();
+            let mut search_metas: Vec<SearchMetadata> =
+                cheatsheet.iter().map(|x| x.as_search_meta()).collect();
 
-            let mut asm: Vec<SearchMetadata> = cacher.articles.iter().filter(|x| x.lang_in_tag(lang)).map(|x| x.as_search_meta()).collect();
-            search_metas.append(&mut asm);
-
-            let _ = langs.insert(lang, search_metas);
+            search_metas.extend(
+                cacher
+                    .articles
+                    .iter()
+                    .filter(|x| x.lang_in_tag(lang))
+                    .map(|x| x.as_search_meta()),
+            );
+            langs.insert(lang, search_metas);
         }
 
-        for title in titles_chain {
+        // Generate search metadata for titles
+        for title in &titles_chain {
             let mut search_metas = Vec::new();
 
-            let csm: Vec<SearchMetadata> = cacher.cheatsheets.iter().filter(|x| &x.title() == &title).map(|x| x.as_search_meta()).collect();
-            search_metas.clone_from(&csm);
+            search_metas.extend(
+                cacher
+                    .cheatsheets
+                    .iter()
+                    .filter(|x| &x.title() == title)
+                    .map(|x| x.as_search_meta()),
+            );
+            search_metas.extend(
+                cacher
+                    .articles
+                    .iter()
+                    .filter(|x| &x.title() == title)
+                    .map(|x| x.as_search_meta()),
+            );
+            search_metas.extend(
+                cacher
+                    .guides
+                    .iter()
+                    .filter(|x| &x.unslug == title)
+                    .map(|x| x.as_search_meta()),
+            );
 
-            let mut asm: Vec<SearchMetadata> = cacher.articles.iter().filter(|x| &x.title() == &title).map(|x| x.as_search_meta()).collect();
-            search_metas.append(&mut asm);
-
-            let mut gsm: Vec<SearchMetadata> = cacher.guides.iter().filter(|x| &x.unslug == &title).map(|x| x.as_search_meta()).collect();
-            search_metas.append(&mut gsm);
-
-            let _ = titles.insert(title, search_metas);
+            titles.insert(title.clone(), search_metas);
         }
 
-        let csm = cacher.cheatsheets.iter().map(|x| x.as_search_meta()).collect::<Vec<SearchMetadata>>();
-        let _ = rty.insert(ResourceType::Cheatsheet, csm);
-
-        let asm = cacher.articles.iter().map(|x| x.as_search_meta()).collect::<Vec<SearchMetadata>>();
-        let _ = rty.insert(ResourceType::Article, asm);
-
-        let gsm = cacher.guides.iter().map(|x| x.as_search_meta()).collect::<Vec<SearchMetadata>>();
-        let _ = rty.insert(ResourceType::Guide, gsm);
-
+        // Generate search metadata for resource types
+        rty.insert(
+            ResourceType::Cheatsheet,
+            cacher
+                .cheatsheets
+                .iter()
+                .map(|x| x.as_search_meta())
+                .collect(),
+        );
+        rty.insert(
+            ResourceType::Article,
+            cacher.articles.iter().map(|x| x.as_search_meta()).collect(),
+        );
+        rty.insert(
+            ResourceType::Guide,
+            cacher.guides.iter().map(|x| x.as_search_meta()).collect(),
+        );
 
         Self { langs, titles, rty }
     }
+
     pub fn search(&self, input: String) -> Vec<SearchMetadata> {
         let lowercase_input = input.to_lowercase();
         let lang_input = Language::from_str(&lowercase_input);
@@ -151,14 +180,16 @@ impl Searcher {
             if let Some(metadata) = self.langs.get(&lang_input) {
                 return metadata.clone();
             }
-        } else if let Some(metadata) = self.rty.get(&ResourceType::from_str(&lowercase_input).unwrap()) {
+        } else if let Some(metadata) = self
+            .rty
+            .get(&ResourceType::from_str(&lowercase_input).unwrap())
+        {
             return metadata.clone();
         }
 
         Vec::new()
     }
 }
-
 
 impl Cacher {
     pub fn new(articles: Vec<Article>, cheatsheets: Vec<Cheatsheet>, guides: Vec<Guide>) -> Self {

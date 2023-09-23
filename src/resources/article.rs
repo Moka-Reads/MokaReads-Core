@@ -3,8 +3,8 @@ use pulldown_cmark::{html, Options, Parser};
 use rss::Item;
 use serde::{Deserialize, Serialize};
 
-use crate::resources::{ResourceType, SearchMetadata};
 use crate::resources::cheatsheet::Language;
+use crate::resources::{ResourceType, SearchMetadata};
 
 use super::Parser as ArticleParser;
 
@@ -41,8 +41,8 @@ impl Metadata {
 
 impl ArticleParser for Article {
     fn parse_raw(markdown: &str) -> Self
-        where
-            Self: Sized,
+    where
+        Self: Sized,
     {
         let separator = "---";
         let mut sections = markdown.splitn(3, separator);
@@ -60,8 +60,8 @@ impl ArticleParser for Article {
     }
 
     fn parse(markdown: &str) -> Self
-        where
-            Self: Sized,
+    where
+        Self: Sized,
     {
         let mut article = Self::parse_raw(markdown);
         let parser = Parser::new_ext(article.content.as_str(), Options::all());
@@ -71,8 +71,8 @@ impl ArticleParser for Article {
         article
     }
     fn raw_to_parsed(&self) -> Self
-        where
-            Self: Sized,
+    where
+        Self: Sized,
     {
         let parser = Parser::new_ext(&self.content, Options::all());
         let mut html_output = String::new();
@@ -89,7 +89,9 @@ impl Article {
     fn link(&self) -> String {
         format!("https://moka-reads.mkproj.com/articles/{}", self.slug)
     }
-    pub fn link_short(&self) -> String { format!("/articles/{}", self.slug) }
+    pub fn link_short(&self) -> String {
+        format!("/articles/{}", self.slug)
+    }
     pub fn to_rss_item(&self) -> Item {
         let mut item = Item::default();
         item.set_title(self.metadata.title.to_string());

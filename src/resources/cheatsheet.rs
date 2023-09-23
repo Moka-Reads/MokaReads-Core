@@ -44,7 +44,9 @@ impl Cheatsheet {
     pub fn title(&self) -> String {
         self.metadata.title.to_string()
     }
-    pub fn link_short(&self) -> String { format!("/cheatsheets/{}", &self.slug) }
+    pub fn link_short(&self) -> String {
+        format!("/cheatsheets/{}", &self.slug)
+    }
     pub fn as_search_meta(&self) -> SearchMetadata {
         SearchMetadata::new(self.title(), ResourceType::Cheatsheet, self.link_short())
     }
@@ -92,8 +94,8 @@ impl Level {
 
 impl CheatsheetParser for Cheatsheet {
     fn parse_raw(markdown: &str) -> Self
-        where
-            Self: Sized,
+    where
+        Self: Sized,
     {
         let separator = "---";
         let mut sections = markdown.splitn(3, separator);
@@ -114,8 +116,8 @@ impl CheatsheetParser for Cheatsheet {
     }
 
     fn parse(markdown: &str) -> Self
-        where
-            Self: Sized,
+    where
+        Self: Sized,
     {
         let mut cheatsheet = Self::parse_raw(markdown);
         let parser = Parser::new_ext(cheatsheet.content.as_str(), Options::all());
@@ -125,8 +127,8 @@ impl CheatsheetParser for Cheatsheet {
         cheatsheet
     }
     fn raw_to_parsed(&self) -> Self
-        where
-            Self: Sized,
+    where
+        Self: Sized,
     {
         let parser = Parser::new_ext(&self.content, Options::all());
         let mut html_output = String::new();
@@ -140,7 +142,7 @@ impl CheatsheetParser for Cheatsheet {
 }
 
 #[derive(
-Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Deserialize, Serialize, EnumVariants, Hash,
+    Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Deserialize, Serialize, EnumVariants, Hash,
 )]
 pub enum Language {
     Kotlin,
