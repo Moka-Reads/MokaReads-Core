@@ -147,8 +147,10 @@ impl Searcher {
         let lang_input = Language::from_str(&lowercase_input);
         if let Some(metadata) = self.titles.get(&input) {
             return metadata.clone();
-        } else if let Some(metadata) = self.langs.get(&lang_input) {
-            return metadata.clone();
+        } else if lang_input != Language::Other {
+            if let Some(metadata) = self.langs.get(&lang_input) {
+                return metadata.clone();
+            }
         } else if let Some(metadata) = self.rty.get(&ResourceType::from_str(&lowercase_input).unwrap()) {
             return metadata.clone();
         }

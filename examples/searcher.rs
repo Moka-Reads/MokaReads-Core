@@ -1,3 +1,5 @@
+use std::io::stdin;
+
 use rocket::tokio;
 
 use mokareads_core::api::Api;
@@ -9,9 +11,11 @@ async fn main() -> Result<()> {
     let data = Api::Resources.get().await?;
     let cacher: Cacher = serde_json::from_str(&data).unwrap();
     let searcher = Searcher::new(&cacher);
-    let str = serde_json::to_string_pretty(&searcher).unwrap();
-    println!("{}", str);
-    let result = searcher.search("Kotlin".to_string());
+    //let str = serde_json::to_string_pretty(&searcher).unwrap();
+    //println!("{}", str);
+    let mut input = String::new();
+    stdin().read_line(&mut input)?;
+    let result = searcher.search(input.trim().to_string());
     println!("{:?}", result);
     Ok(())
 }
