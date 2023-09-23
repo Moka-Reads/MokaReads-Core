@@ -65,11 +65,12 @@ pub struct SearchMetadata {
     title: String,
     ty: ResourceType,
     link: String,
+    lang: String,
 }
 
 impl SearchMetadata {
-    pub fn new(title: String, ty: ResourceType, link: String) -> Self {
-        Self { title, ty, link }
+    pub fn new(title: String, ty: ResourceType, link: String, lang: String) -> Self {
+        Self { title, ty, link, lang }
     }
 }
 

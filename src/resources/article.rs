@@ -3,8 +3,8 @@ use pulldown_cmark::{html, Options, Parser};
 use rss::Item;
 use serde::{Deserialize, Serialize};
 
-use crate::resources::cheatsheet::Language;
 use crate::resources::{ResourceType, SearchMetadata};
+use crate::resources::cheatsheet::Language;
 
 use super::Parser as ArticleParser;
 
@@ -41,8 +41,8 @@ impl Metadata {
 
 impl ArticleParser for Article {
     fn parse_raw(markdown: &str) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         let separator = "---";
         let mut sections = markdown.splitn(3, separator);
@@ -60,8 +60,8 @@ impl ArticleParser for Article {
     }
 
     fn parse(markdown: &str) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         let mut article = Self::parse_raw(markdown);
         let parser = Parser::new_ext(article.content.as_str(), Options::all());
@@ -71,8 +71,8 @@ impl ArticleParser for Article {
         article
     }
     fn raw_to_parsed(&self) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         let parser = Parser::new_ext(&self.content, Options::all());
         let mut html_output = String::new();
@@ -127,7 +127,7 @@ impl Article {
         self.metadata.title.to_string()
     }
     pub fn as_search_meta(&self) -> SearchMetadata {
-        SearchMetadata::new(self.title(), ResourceType::Article, self.link_short())
+        SearchMetadata::new(self.title(), ResourceType::Article, self.link_short(), self.metadata.tags.clone())
     }
     pub fn lang_in_tag(&self, lang: Language) -> bool {
         let lang = lang.to_string();
