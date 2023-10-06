@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Language","Level"],"fn":["get_lang_map"],"struct":["Cheatsheet","Metadata"]};

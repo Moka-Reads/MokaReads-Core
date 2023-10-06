@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ResourceType"],"mod":["article","cheatsheet","guide"],"struct":["Cacher","SearchMetadata","Searcher"],"trait":["Parser"]};
