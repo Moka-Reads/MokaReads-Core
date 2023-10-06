@@ -16,6 +16,18 @@ jobs:
         run: cargo doc --no-deps 
       - name: Create .nojekyll file
         run: touch target/doc/.nojekyll
+      - name: Create HTML Redirect Page
+        run: |
+          echo '<!DOCTYPE html>' > index.html
+          echo '<html>' >> index.html
+          echo '<head>' >> index.html
+          echo '    <meta http-equiv="refresh" content="0;url=mokareads_core/index.html">' >> index.html
+          echo '</head>' >> index.html
+          echo '<body>' >> index.html
+          echo '</body>' >> index.html
+          echo '</html>' >> index.html
+      - name: Move index to folder 
+        run: mv index.html target/doc/
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
