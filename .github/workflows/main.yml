@@ -15,10 +15,10 @@ jobs:
       - name: Generate documentation
         run: cargo doc --no-deps 
       - name: Create .nojekyll file
-        run: touch target/doc/mokareads_core/.nojekyll
+        run: touch target/doc/.nojekyll
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: target/doc/mokareads_core/
+          FOLDER: target/doc/
