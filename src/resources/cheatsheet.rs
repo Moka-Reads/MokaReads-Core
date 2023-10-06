@@ -4,12 +4,30 @@ use std::fmt::{Display, Formatter};
 use mokareads_macros::EnumVariants;
 use pulldown_cmark::{html, Options, Parser};
 use serde::{Deserialize, Serialize};
-
+use futures::stream::FuturesUnordered;
 use crate::resources::ResourceType;
 
 use super::Parser as CheatsheetParser;
 use super::SearchMetadata;
 
+/// # MoKa Reads Cheatsheet  
+/// 
+/// Cheat sheets are a great way to quickly learn something new. They are also a great way to refresh your memory on something you've already learned. 
+/// In our website, we seperate the cheat sheets by language, and then by level of difficulty. This allows for users to see the 
+/// beginner, intermediate, and advanced cheat sheets for a language.
+/// 
+/// ## Markdown Format: 
+/// 
+/// ```markdown
+/// ---
+/// title: My Cheat Sheet
+/// author: John Doe
+/// level: 1
+/// language: python
+/// icon: devicon
+/// ---
+/// Content of the cheat sheet
+/// ```
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
 pub struct Cheatsheet {
     metadata: Metadata,
@@ -25,6 +43,16 @@ impl Cheatsheet {
             metadata,
             slug,
             content,
+        }
+    }
+
+    pub async fn fetch(cheatsheets: &[Self], slug: String, lang: String) -> Self{
+        let unordered = FuturesUnordered::from_iter(cheatsheets)
+            .iter().find(|x| x.slug == slug && x.lang() == lang)
+            .cloned();
+        match unordered{
+            Some(c) => c.clone(),
+            None => Cheatsheet::default()
         }
     }
     pub fn to_markdown(&self) -> String {
@@ -52,6 +80,18 @@ impl Cheatsheet {
     }
 }
 
+/// # Cheatsheet Metadata
+///
+/// The metadata section is a YAML document which contains the following fields:
+///
+/// - `title`: The title of the cheat sheet.
+/// - `author`: The author of the cheat sheet.
+/// - `level`: The level of the cheat sheet (1, 2, or 3).
+///   - 1: Beginner
+///   - 2: Intermediate
+///   - 3: Advanced
+/// - `language`: The language of the cheat sheet.
+/// - `icon`: The icon to use for the cheat sheet (`devicon` or `fontawesome5`).
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Default)]
 pub struct Metadata {
     title: String,

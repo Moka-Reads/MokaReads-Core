@@ -1,10 +1,5 @@
 # Articles
 
-Articles are built to cover different topics related to a language, 
-this could be news, tutorials, or anything else that is relevant to the language.
-To properly organize the different articles in our repository, we use a specification 
-which will regularly update to keep up with the needs of the community.
-
 ## Article Format
 The general idea is to create a markdown file which contains a metadata section at the top delimited by `---` and 
 after that, the content of the article. The metadata section is used to provide information about the article,

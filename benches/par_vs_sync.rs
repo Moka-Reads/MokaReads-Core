@@ -1,4 +1,6 @@
+use std::fmt::format;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::async_executor::FuturesExecutor;
 use rand::prelude::SliceRandom;
 use rand::Rng;
 use rayon::prelude::*;
@@ -12,6 +14,11 @@ fn sync_linear_search(data: &[Cheatsheet], target: &Cheatsheet) -> Option<Cheats
 // Parallel linear search
 fn parallel_linear_search(data: &[Cheatsheet], target: &Cheatsheet) -> Option<Cheatsheet> {
     data.par_iter().find_first(|x|x.slug == target.slug && x.lang() == target.lang()).cloned()
+}
+
+// Async linear search
+async fn async_linear_search(data: &[Cheatsheet], target: &Cheatsheet) -> Cheatsheet{
+    Cheatsheet::fetch(data, target.slug.clone(), target.lang()).await
 }
 
 fn fill_by_size(size: usize) -> Vec<Cheatsheet>{
@@ -59,16 +66,13 @@ fn benchmark(c: &mut Criterion) {
                 })
             },
         );
+        c.bench_function(
+            &format!("Async Linear Search - Dataset Size: {}", size),
+            |b|{
+                b.to_async(FuturesExecutor).iter(|| async_linear_search(&data, &one_to_find));
 
-        c.bench_function(&format!("Sync vs Parallel - Dataset Size: {}", size), |b| {
-            b.iter(|| {
-                let _sync_result = sync_linear_search(&data, &one_to_find);
-                let _parallel_result = parallel_linear_search(&data, &one_to_find);
-                // Ensure both results are not optimized out
-                black_box(&_sync_result);
-                black_box(&_parallel_result);
-            })
-        });
+            }
+        );
     }
 }
 criterion_group!(benches, benchmark);
