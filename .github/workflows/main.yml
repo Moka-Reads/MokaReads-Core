@@ -21,7 +21,7 @@ jobs:
           echo '<!DOCTYPE html>' > index.html
           echo '<html>' >> index.html
           echo '<head>' >> index.html
-          echo '    <meta http-equiv="refresh" content="0;url=/MokaReads-Core/mokareads_core/index.html">' >> index.html
+          echo '    <meta http-equiv="refresh" content="0;url=/mokareads_core/index.html">' >> index.html
           echo '</head>' >> index.html
           echo '<body>' >> index.html
           echo '</body>' >> index.html
