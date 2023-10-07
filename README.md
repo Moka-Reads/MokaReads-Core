@@ -3,6 +3,12 @@
 ## The Core Library of MoKa Reads Software
 
 > This library is under the [GPLv2 License](LICENSE.md)
+>
+> Currently, this library has not been released to [crates.io](https://crates.io), 
+> but there is plans to do so once more work has been put in, and
+>  I can stop relying on the bleeding edge commits on projects. 
+> 
+> Documentation can be found at [coredocs.mokareads.org](http://coredocs.mokareads.org)
 
 This library is used a core way to synchronize various MoKa Reads applications/tools that may interact with eachother. 
 There are many plans to build fundamental applications in Rust, so allowing for a central way to distribute types 
@@ -15,8 +21,4 @@ it, and since there are plans of seperating different aspects of the web service
 a good step in the right direction. 
 
 
-> Currently, this library has not been released to [crates.io](https://crates.io), but there is plans to do so once more work 
-> has been put in, and I can stop relying on the bleeding edge commits on projects. 
 
-
-- <i class="fa-solid fa-book"></i> [Documentation](https://moka-reads.github.io/MokaReads-Core/index.html)
