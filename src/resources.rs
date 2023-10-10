@@ -60,6 +60,7 @@ impl FromStr for ResourceType {
     }
 }
 
+/// Metadata for a search result 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct SearchMetadata {
     title: String,
@@ -75,6 +76,7 @@ impl SearchMetadata {
 }
 
 /// Hashmaps for quick navigation
+///
 /// A user will be able to search for something under the following conditions:
 /// - Language of Focus
 /// - Title of Resource
