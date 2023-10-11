@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Error"],"mod":["api","awesome_lists","extension","resources"],"struct":["Category","CategoryBuilder","Channel","ChannelBuilder","Cloud","CloudBuilder","Enclosure","EnclosureBuilder","Guid","GuidBuilder","Image","ImageBuilder","Item","ItemBuilder","Source","SourceBuilder","TextInput","TextInputBuilder"],"type":["Result"]};
+window.SIDEBAR_ITEMS = {"mod":["api","awesome_lists","resources"],"struct":["Channel","Item"],"type":["Result"]};

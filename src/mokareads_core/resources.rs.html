@@ -219,6 +219,8 @@
 <a href="#219" id="219">219</a>
 <a href="#220" id="220">220</a>
 <a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::str::FromStr;
 
@@ -281,7 +283,8 @@
     }
 }
 
-<span class="attr">#[derive(Debug, Clone, Deserialize, Serialize)]
+<span class="doccomment">/// Metadata for a search result 
+</span><span class="attr">#[derive(Debug, Clone, Deserialize, Serialize)]
 </span><span class="kw">pub struct </span>SearchMetadata {
     title: String,
     ty: ResourceType,
@@ -296,6 +299,7 @@
 }
 
 <span class="doccomment">/// Hashmaps for quick navigation
+///
 /// A user will be able to search for something under the following conditions:
 /// - Language of Focus
 /// - Title of Resource

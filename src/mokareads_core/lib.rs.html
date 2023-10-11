@@ -19,20 +19,14 @@
 <a href="#19" id="19">19</a>
 <a href="#20" id="20">20</a>
 <a href="#21" id="21">21</a>
-<a href="#22" id="22">22</a>
-<a href="#23" id="23">23</a>
-<a href="#24" id="24">24</a>
-</pre></div><pre class="rust"><code><span class="comment">/*
-MoKa Reads Core Library
-Developed by Mustafif Khan
+</pre></div><pre class="rust"><code>
+<span class="doccomment">//! # MoKa Reads Core Library
+//! **Developed by Mustafif Khan**
+//!
+//! This is built to serve as a core library for various MoKa Reads application/tools.
+//! All code is under the GPLv2 License
 
-This is built to serve as a core library for
-various MoKa Reads application/tools.
-
-All code is under the GPLv2 License (LICENSE.md).
- */
-
-</span><span class="doccomment">/// A wrapper over the MoKa Reads API spec
+/// A wrapper over the MoKa Reads API spec
 </span><span class="kw">pub mod </span>api;
 <span class="doccomment">/// Awesome Lists of various topics in GitHub
 </span><span class="kw">pub mod </span>awesome_lists;
@@ -42,7 +36,7 @@ All code is under the GPLv2 License (LICENSE.md).
 <span class="doccomment">/// The different MoKa Reads Resources
 </span><span class="kw">pub mod </span>resources;
 
-<span class="kw">pub use </span>rss::<span class="kw-2">*</span>;
+<span class="kw">pub use </span>rss::{Item, Channel};
 
 <span class="doccomment">/// A generic Result type
 </span><span class="kw">pub type </span><span class="prelude-ty">Result</span>&lt;T&gt; = std::result::Result&lt;T, Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt;;
