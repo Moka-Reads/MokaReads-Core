@@ -1,6 +1,6 @@
 [package]
 name = "mokareads-core"
-version = "0.5.0"
+version = "0.6.0"
 edition = "2021"
 authors = ["Mustafif Khan <mustafif0929@gmail.com>", "MoKa Reads <help@mokareads.org>"]
 description = "The Core Library for MoKa Reads Software"
