@@ -187,17 +187,37 @@
 <a href="#187" id="187">187</a>
 <a href="#188" id="188">188</a>
 <a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>chrono::Utc;
 <span class="kw">use </span>pulldown_cmark::{html, Options, Parser};
 <span class="kw">use </span>rss::Item;
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 
-<span class="kw">use </span><span class="kw">crate</span>::resources::cheatsheet::Language;
 <span class="kw">use </span><span class="kw">crate</span>::resources::{ResourceType, SearchMetadata};
+<span class="kw">use </span><span class="kw">crate</span>::resources::cheatsheet::Language;
 
 <span class="kw">use </span><span class="kw">super</span>::Parser <span class="kw">as </span>ArticleParser;
 
-<span class="doccomment">/// # Moka Reads Articles   
+<span class="doccomment">/// # Moka Reads Articles
 /// Articles are built to cover different topics related to a language,
 /// this could be news, tutorials, or anything else that is relevant to the language.
 /// To properly organize the different articles in our repository, we use a specification
@@ -260,8 +280,8 @@
 
 <span class="kw">impl </span>ArticleParser <span class="kw">for </span>Article {
     <span class="kw">fn </span>parse_raw(markdown: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self
-    </span><span class="kw">where
-        </span><span class="self">Self</span>: Sized,
+        </span><span class="kw">where
+            </span><span class="self">Self</span>: Sized,
     {
         <span class="kw">let </span>separator = <span class="string">&quot;---&quot;</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>sections = markdown.splitn(<span class="number">3</span>, separator);
@@ -279,8 +299,8 @@
     }
 
     <span class="kw">fn </span>parse(markdown: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self
-    </span><span class="kw">where
-        </span><span class="self">Self</span>: Sized,
+        </span><span class="kw">where
+            </span><span class="self">Self</span>: Sized,
     {
         <span class="kw">let </span><span class="kw-2">mut </span>article = <span class="self">Self</span>::parse_raw(markdown);
         <span class="kw">let </span>parser = Parser::new_ext(article.content.as_str(), Options::all());
@@ -290,8 +310,8 @@
         article
     }
     <span class="kw">fn </span>raw_to_parsed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self
-    </span><span class="kw">where
-        </span><span class="self">Self</span>: Sized,
+        </span><span class="kw">where
+            </span><span class="self">Self</span>: Sized,
     {
         <span class="kw">let </span>parser = Parser::new_ext(<span class="kw-2">&amp;</span><span class="self">self</span>.content, Options::all());
         <span class="kw">let </span><span class="kw-2">mut </span>html_output = String::new();
@@ -326,6 +346,26 @@
         item.set_pub_date(<span class="self">self</span>.metadata.date.clone());
         item
     }
+    <span class="doccomment">/// A `O(n)` way to find an Article
+    </span><span class="kw">pub fn </span>find(articles: <span class="kw-2">&amp;</span>[Article], slug: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::find_sync(articles, slug)
+    }
+    <span class="doccomment">/// A `O(log n)` way to find an Article using binary search
+    </span><span class="kw">pub fn </span>search(articles: <span class="kw-2">&amp;</span>[Article], slug: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self </span>{
+        <span class="kw">match </span>articles.binary_search_by(|x| x.slug.cmp(<span class="kw-2">&amp;</span>slug.to_string())).ok() {
+            <span class="prelude-val">Some</span>(index) =&gt; articles[index].clone(),
+            <span class="prelude-val">None </span>=&gt; <span class="self">Self</span>::default()
+        }
+    }
+
+    <span class="kw">fn </span>find_sync(articles: <span class="kw-2">&amp;</span>[Article], slug: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self </span>{
+        articles
+            .iter()
+            .find(|x| x.slug == slug)
+            .cloned()
+            .unwrap_or_default()
+    }
+
     <span class="kw">pub fn </span>new(metadata: Metadata, content: String) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>slug = metadata.title.replace(<span class="string">&#39; &#39;</span>, <span class="string">&quot;_&quot;</span>);
         <span class="self">Self </span>{

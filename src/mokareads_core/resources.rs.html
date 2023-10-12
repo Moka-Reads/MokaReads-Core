@@ -221,6 +221,11 @@
 <a href="#221" id="221">221</a>
 <a href="#222" id="222">222</a>
 <a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::str::FromStr;
 
@@ -243,16 +248,16 @@
 </span><span class="kw">pub trait </span>Parser {
     <span class="doccomment">/// Parses the markdown file and keeps the markdown content
     </span><span class="kw">fn </span>parse_raw(markdown: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self
-        </span><span class="kw">where
-            </span><span class="self">Self</span>: Sized;
+    </span><span class="kw">where
+        </span><span class="self">Self</span>: Sized;
     <span class="doccomment">/// Parses the markdown file and parses the markdown content to html
     </span><span class="kw">fn </span>parse(markdown: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self
-        </span><span class="kw">where
-            </span><span class="self">Self</span>: Sized;
+    </span><span class="kw">where
+        </span><span class="self">Self</span>: Sized;
     <span class="doccomment">/// Converts a `raw` version to a `parsed` version.
     </span><span class="kw">fn </span>raw_to_parsed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self
-        </span><span class="kw">where
-            </span><span class="self">Self</span>: Sized;
+    </span><span class="kw">where
+        </span><span class="self">Self</span>: Sized;
 }
 
 <span class="doccomment">/// A type to store all different resources with a time of update to show when resources were last cached
@@ -283,7 +288,7 @@
     }
 }
 
-<span class="doccomment">/// Metadata for a search result 
+<span class="doccomment">/// Metadata for a search result
 </span><span class="attr">#[derive(Debug, Clone, Deserialize, Serialize)]
 </span><span class="kw">pub struct </span>SearchMetadata {
     title: String,
@@ -294,7 +299,12 @@
 
 <span class="kw">impl </span>SearchMetadata {
     <span class="kw">pub fn </span>new(title: String, ty: ResourceType, link: String, lang: String) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{ title, ty, link, lang }
+        <span class="self">Self </span>{
+            title,
+            ty,
+            link,
+            lang,
+        }
     }
 }
 

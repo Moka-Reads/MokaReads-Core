@@ -269,26 +269,43 @@
 <a href="#269" id="269">269</a>
 <a href="#270" id="270">270</a>
 <a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::fmt::{Display, Formatter};
 
+<span class="kw">use </span>futures::stream::FuturesUnordered;
 <span class="kw">use </span>mokareads_macros::EnumVariants;
 <span class="kw">use </span>pulldown_cmark::{html, Options, Parser};
 <span class="kw">use </span>serde::{Deserialize, Serialize};
-<span class="kw">use </span>futures::stream::FuturesUnordered;
+
 <span class="kw">use </span><span class="kw">crate</span>::resources::ResourceType;
 
 <span class="kw">use </span><span class="kw">super</span>::Parser <span class="kw">as </span>CheatsheetParser;
 <span class="kw">use </span><span class="kw">super</span>::SearchMetadata;
 
-<span class="doccomment">/// # MoKa Reads Cheatsheet  
-/// 
-/// Cheat sheets are a great way to quickly learn something new. They are also a great way to refresh your memory on something you&#39;ve already learned. 
-/// In our website, we seperate the cheat sheets by language, and then by level of difficulty. This allows for users to see the 
+<span class="doccomment">/// # MoKa Reads Cheatsheet
+///
+/// Cheat sheets are a great way to quickly learn something new. They are also a great way to refresh your memory on something you&#39;ve already learned.
+/// In our website, we seperate the cheat sheets by language, and then by level of difficulty. This allows for users to see the
 /// beginner, intermediate, and advanced cheat sheets for a language.
-/// 
-/// ## Markdown Format: 
-/// 
+///
+/// ## Markdown Format:
+///
 /// ```markdown
 /// ---
 /// title: My Cheat Sheet
@@ -316,15 +333,25 @@
             content,
         }
     }
-
-    <span class="kw">pub async fn </span>fetch(cheatsheets: <span class="kw-2">&amp;</span>[<span class="self">Self</span>], slug: String, lang: String) -&gt; <span class="self">Self</span>{
+    <span class="doccomment">/// Asynchronously fetches a cheatsheet from a list of cheatsheets
+    </span><span class="kw">pub async fn </span>fetch(cheatsheets: <span class="kw-2">&amp;</span>[<span class="self">Self</span>], slug: String, lang: String) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>unordered = FuturesUnordered::from_iter(cheatsheets)
-            .iter().find(|x| x.slug == slug &amp;&amp; x.lang() == lang)
+            .iter()
+            .find(|x| x.slug == slug &amp;&amp; x.lang() == lang)
             .cloned();
-        <span class="kw">match </span>unordered{
+        <span class="kw">match </span>unordered {
             <span class="prelude-val">Some</span>(c) =&gt; c.clone(),
-            <span class="prelude-val">None </span>=&gt; Cheatsheet::default()
+            <span class="prelude-val">None </span>=&gt; Cheatsheet::default(),
         }
+    }
+    <span class="doccomment">/// Synchronously finds a cheatsheet from a list of cheatsheets
+    /// Reason of having a dedicated function is to be able to control the method
+    </span><span class="kw">pub fn </span>find(cheatsheets: <span class="kw-2">&amp;</span>[<span class="self">Self</span>], slug: String, lang: String) -&gt; <span class="self">Self </span>{
+        cheatsheets
+            .iter()
+            .find(|x| x.slug == slug &amp;&amp; x.lang() == lang)
+            .cloned()
+            .unwrap_or_default()
     }
     <span class="kw">pub fn </span>to_markdown(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
         <span class="kw">let </span><span class="kw-2">mut </span>parts = Vec::new();
@@ -347,7 +374,12 @@
         <span class="macro">format!</span>(<span class="string">&quot;/cheatsheets/{}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.slug)
     }
     <span class="kw">pub fn </span>as_search_meta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SearchMetadata {
-        SearchMetadata::new(<span class="self">self</span>.title(), ResourceType::Cheatsheet, <span class="self">self</span>.link_short(), <span class="self">self</span>.lang())
+        SearchMetadata::new(
+            <span class="self">self</span>.title(),
+            ResourceType::Cheatsheet,
+            <span class="self">self</span>.link_short(),
+            <span class="self">self</span>.lang(),
+        )
     }
 }
 

@@ -32,6 +32,11 @@
 <a href="#32" id="32">32</a>
 <a href="#33" id="33">33</a>
 <a href="#34" id="34">34</a>
+<a href="#35" id="35">35</a>
+<a href="#36" id="36">36</a>
+<a href="#37" id="37">37</a>
+<a href="#38" id="38">38</a>
+<a href="#39" id="39">39</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>rocket::response::Redirect;
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 
@@ -63,7 +68,12 @@
         <span class="macro">format!</span>(<span class="string">&quot;/guides/{}&quot;</span>, <span class="self">self</span>.repo_name)
     }
     <span class="kw">pub fn </span>as_search_meta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SearchMetadata {
-        SearchMetadata::new(<span class="self">self</span>.unslug.clone(), ResourceType::Guide, <span class="self">self</span>.link_short(), <span class="string">&quot;&quot;</span>.to_string())
+        SearchMetadata::new(
+            <span class="self">self</span>.unslug.clone(),
+            ResourceType::Guide,
+            <span class="self">self</span>.link_short(),
+            <span class="string">&quot;&quot;</span>.to_string(),
+        )
     }
 }
 </code></pre></div></section></main></body></html>

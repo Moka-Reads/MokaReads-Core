@@ -18,9 +18,7 @@
 <a href="#18" id="18">18</a>
 <a href="#19" id="19">19</a>
 <a href="#20" id="20">20</a>
-<a href="#21" id="21">21</a>
-</pre></div><pre class="rust"><code>
-<span class="doccomment">//! # MoKa Reads Core Library
+</pre></div><pre class="rust"><code><span class="doccomment">//! # MoKa Reads Core Library
 //! **Developed by Mustafif Khan**
 //!
 //! This is built to serve as a core library for various MoKa Reads application/tools.
@@ -36,7 +34,7 @@
 <span class="doccomment">/// The different MoKa Reads Resources
 </span><span class="kw">pub mod </span>resources;
 
-<span class="kw">pub use </span>rss::{Item, Channel};
+<span class="kw">pub use </span>rss::{Channel, Item};
 
 <span class="doccomment">/// A generic Result type
 </span><span class="kw">pub type </span><span class="prelude-ty">Result</span>&lt;T&gt; = std::result::Result&lt;T, Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt;;
