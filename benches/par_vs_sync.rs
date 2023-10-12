@@ -1,32 +1,38 @@
-use std::fmt::format;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use criterion::async_executor::FuturesExecutor;
+/// This benchmark is for Cheatsheets
+use criterion::{black_box, Criterion, criterion_group, criterion_main};
 use rand::prelude::SliceRandom;
-use rand::Rng;
 use rayon::prelude::*;
+
 use mokareads_core::resources::cheatsheet::{Cheatsheet, Metadata};
 
 // Synchronous linear search
 fn sync_linear_search(data: &[Cheatsheet], target: &Cheatsheet) -> Option<Cheatsheet> {
-    data.iter().find(|x| x.slug == target.slug && x.lang() == target.lang()).cloned()
+    data.iter()
+        .find(|x| x.slug == target.slug && x.lang() == target.lang())
+        .cloned()
 }
 
 // Parallel linear search
 fn parallel_linear_search(data: &[Cheatsheet], target: &Cheatsheet) -> Option<Cheatsheet> {
-    data.par_iter().find_first(|x|x.slug == target.slug && x.lang() == target.lang()).cloned()
+    data.par_iter()
+        .find_first(|x| x.slug == target.slug && x.lang() == target.lang())
+        .cloned()
 }
 
 // Async linear search
-async fn async_linear_search(data: &[Cheatsheet], target: &Cheatsheet) -> Cheatsheet{
+async fn async_linear_search(data: &[Cheatsheet], target: &Cheatsheet) -> Cheatsheet {
     Cheatsheet::fetch(data, target.slug.clone(), target.lang()).await
 }
 
-fn fill_by_size(size: usize) -> Vec<Cheatsheet>{
-    let one_to_find = Cheatsheet::new(Metadata::new("special", "special", 1, "special", "special"), "special".to_string());
+fn fill_by_size(size: usize) -> Vec<Cheatsheet> {
+    let one_to_find = Cheatsheet::new(
+        Metadata::new("special", "special", 1, "special", "special"),
+        "special".to_string(),
+    );
     let mut vec = Vec::with_capacity(size);
     vec.push(one_to_find);
 
-    for i in 1..size{
+    for i in 1..size {
         vec.push(Cheatsheet::default())
     }
 
@@ -35,7 +41,6 @@ fn fill_by_size(size: usize) -> Vec<Cheatsheet>{
 
 fn benchmark(c: &mut Criterion) {
     let mut rng = rand::thread_rng();
-
     // Define different dataset sizes
     let dataset_sizes = vec![10_000, 100_000, 1_000_000, 10_000_000];
 
@@ -45,7 +50,10 @@ fn benchmark(c: &mut Criterion) {
         // Shuffle the data randomly
         data.shuffle(&mut rng);
 
-        let one_to_find = Cheatsheet::new(Metadata::new("special", "special", 1, "special", "special"), "special".to_string());
+        let one_to_find = Cheatsheet::new(
+            Metadata::new("special", "special", 1, "special", "special"),
+            "special".to_string(),
+        );
 
         c.bench_function(
             &format!("Sync Linear Search - Dataset Size: {}", size),
@@ -65,13 +73,6 @@ fn benchmark(c: &mut Criterion) {
                     black_box(result); // Ensure result is not optimized out
                 })
             },
-        );
-        c.bench_function(
-            &format!("Async Linear Search - Dataset Size: {}", size),
-            |b|{
-                b.to_async(FuturesExecutor).iter(|| async_linear_search(&data, &one_to_find));
-
-            }
         );
     }
 }

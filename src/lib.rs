@@ -1,4 +1,3 @@
-
 //! # MoKa Reads Core Library
 //! **Developed by Mustafif Khan**
 //!
@@ -15,7 +14,7 @@ pub mod latex;
 /// The different MoKa Reads Resources
 pub mod resources;
 
-pub use rss::{Item, Channel};
+pub use rss::{Channel, Item};
 
 /// A generic Result type
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;

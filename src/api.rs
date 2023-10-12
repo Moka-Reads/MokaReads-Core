@@ -19,18 +19,18 @@ pub enum Api {
 
 /// The MoKa Reads branch either (stable or beta)
 #[derive(Debug, Clone, Copy)]
-pub enum Branch{
+pub enum Branch {
     /// Represents the `main` branch in `git`
     Stable,
     /// Represents the `beta` branch in `git`
-    Beta
+    Beta,
 }
 
 impl Api {
     fn link(&self, branch: Branch) -> String {
-        let base = match branch{
+        let base = match branch {
             Branch::Stable => "https://mokareads.org/api/",
-            Branch::Beta => "https://beta.mokareads.org/api/"
+            Branch::Beta => "https://beta.mokareads.org/api/",
         };
         match self {
             Api::Resources => format!("{}resources", base),
@@ -47,4 +47,3 @@ impl Api {
         Ok(response)
     }
 }
-

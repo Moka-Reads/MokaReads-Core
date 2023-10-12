@@ -2,13 +2,13 @@ use std::io::stdin;
 
 use rocket::tokio;
 
-use mokareads_core::api::Api;
+use mokareads_core::api::{Api, Branch};
 use mokareads_core::resources::{Cacher, Searcher};
 use mokareads_core::Result;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let data = Api::Resources.get().await?;
+    let data = Api::Resources.get(Branch::Stable).await?;
     let cacher: Cacher = serde_json::from_str(&data).unwrap();
     let searcher = Searcher::new(&cacher);
     //let str = serde_json::to_string_pretty(&searcher).unwrap();

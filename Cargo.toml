@@ -15,6 +15,11 @@ path = "benches/par_vs_sync.rs"
 name = "par_vs_sync"
 harness = false
 
+[[bench]]
+path = "benches/find_or_search.rs"
+name = "find_or_search"
+harness = false
+
 
 [dependencies]
 pulldown-cmark = "0.9.3"
@@ -35,10 +40,11 @@ experimental = ["pandoc"]
 
 
 [dev-dependencies]
-criterion = { version = "0.5.1", features = ["html_reports", "async_futures"] }
+criterion = { version = "0.5.1", features = ["html_reports", "async_futures", "async_tokio"] }
 rayon = "1.7.0"
 lipsum = "0.9.0"
 rand = "0.8.5"
+tokio = { version = "1.33.0", features = ["rt"] }
 
 # Build optimizations
 [profile.release]

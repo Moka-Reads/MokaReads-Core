@@ -20,16 +20,16 @@ pub mod guide;
 pub trait Parser {
     /// Parses the markdown file and keeps the markdown content
     fn parse_raw(markdown: &str) -> Self
-        where
-            Self: Sized;
+    where
+        Self: Sized;
     /// Parses the markdown file and parses the markdown content to html
     fn parse(markdown: &str) -> Self
-        where
-            Self: Sized;
+    where
+        Self: Sized;
     /// Converts a `raw` version to a `parsed` version.
     fn raw_to_parsed(&self) -> Self
-        where
-            Self: Sized;
+    where
+        Self: Sized;
 }
 
 /// A type to store all different resources with a time of update to show when resources were last cached
@@ -60,7 +60,7 @@ impl FromStr for ResourceType {
     }
 }
 
-/// Metadata for a search result 
+/// Metadata for a search result
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct SearchMetadata {
     title: String,
@@ -71,7 +71,12 @@ pub struct SearchMetadata {
 
 impl SearchMetadata {
     pub fn new(title: String, ty: ResourceType, link: String, lang: String) -> Self {
-        Self { title, ty, link, lang }
+        Self {
+            title,
+            ty,
+            link,
+            lang,
+        }
     }
 }
 

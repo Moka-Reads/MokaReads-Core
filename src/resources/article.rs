@@ -3,12 +3,12 @@ use pulldown_cmark::{html, Options, Parser};
 use rss::Item;
 use serde::{Deserialize, Serialize};
 
-use crate::resources::cheatsheet::Language;
 use crate::resources::{ResourceType, SearchMetadata};
+use crate::resources::cheatsheet::Language;
 
 use super::Parser as ArticleParser;
 
-/// # Moka Reads Articles   
+/// # Moka Reads Articles
 /// Articles are built to cover different topics related to a language,
 /// this could be news, tutorials, or anything else that is relevant to the language.
 /// To properly organize the different articles in our repository, we use a specification
@@ -71,8 +71,8 @@ impl Metadata {
 
 impl ArticleParser for Article {
     fn parse_raw(markdown: &str) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         let separator = "---";
         let mut sections = markdown.splitn(3, separator);
@@ -90,8 +90,8 @@ impl ArticleParser for Article {
     }
 
     fn parse(markdown: &str) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         let mut article = Self::parse_raw(markdown);
         let parser = Parser::new_ext(article.content.as_str(), Options::all());
@@ -101,8 +101,8 @@ impl ArticleParser for Article {
         article
     }
     fn raw_to_parsed(&self) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         let parser = Parser::new_ext(&self.content, Options::all());
         let mut html_output = String::new();
@@ -137,6 +137,26 @@ impl Article {
         item.set_pub_date(self.metadata.date.clone());
         item
     }
+    /// A `O(n)` way to find an Article
+    pub fn find(articles: &[Article], slug: &str) -> Self {
+        Self::find_sync(articles, slug)
+    }
+    /// A `O(log n)` way to find an Article using binary search
+    pub fn search(articles: &[Article], slug: &str) -> Self {
+        match articles.binary_search_by(|x| x.slug.cmp(&slug.to_string())).ok() {
+            Some(index) => articles[index].clone(),
+            None => Self::default()
+        }
+    }
+
+    fn find_sync(articles: &[Article], slug: &str) -> Self {
+        articles
+            .iter()
+            .find(|x| x.slug == slug)
+            .cloned()
+            .unwrap_or_default()
+    }
+
     pub fn new(metadata: Metadata, content: String) -> Self {
         let slug = metadata.title.replace(' ', "_");
         Self {

@@ -29,6 +29,11 @@ impl Guide {
         format!("/guides/{}", self.repo_name)
     }
     pub fn as_search_meta(&self) -> SearchMetadata {
-        SearchMetadata::new(self.unslug.clone(), ResourceType::Guide, self.link_short(), "".to_string())
+        SearchMetadata::new(
+            self.unslug.clone(),
+            ResourceType::Guide,
+            self.link_short(),
+            "".to_string(),
+        )
     }
 }

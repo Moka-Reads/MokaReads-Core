@@ -1,23 +1,24 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 
+use futures::stream::FuturesUnordered;
 use mokareads_macros::EnumVariants;
 use pulldown_cmark::{html, Options, Parser};
 use serde::{Deserialize, Serialize};
-use futures::stream::FuturesUnordered;
+
 use crate::resources::ResourceType;
 
 use super::Parser as CheatsheetParser;
 use super::SearchMetadata;
 
-/// # MoKa Reads Cheatsheet  
-/// 
-/// Cheat sheets are a great way to quickly learn something new. They are also a great way to refresh your memory on something you've already learned. 
-/// In our website, we seperate the cheat sheets by language, and then by level of difficulty. This allows for users to see the 
+/// # MoKa Reads Cheatsheet
+///
+/// Cheat sheets are a great way to quickly learn something new. They are also a great way to refresh your memory on something you've already learned.
+/// In our website, we seperate the cheat sheets by language, and then by level of difficulty. This allows for users to see the
 /// beginner, intermediate, and advanced cheat sheets for a language.
-/// 
-/// ## Markdown Format: 
-/// 
+///
+/// ## Markdown Format:
+///
 /// ```markdown
 /// ---
 /// title: My Cheat Sheet
@@ -45,15 +46,25 @@ impl Cheatsheet {
             content,
         }
     }
-
-    pub async fn fetch(cheatsheets: &[Self], slug: String, lang: String) -> Self{
+    /// Asynchronously fetches a cheatsheet from a list of cheatsheets
+    pub async fn fetch(cheatsheets: &[Self], slug: String, lang: String) -> Self {
         let unordered = FuturesUnordered::from_iter(cheatsheets)
-            .iter().find(|x| x.slug == slug && x.lang() == lang)
+            .iter()
+            .find(|x| x.slug == slug && x.lang() == lang)
             .cloned();
-        match unordered{
+        match unordered {
             Some(c) => c.clone(),
-            None => Cheatsheet::default()
+            None => Cheatsheet::default(),
         }
+    }
+    /// Synchronously finds a cheatsheet from a list of cheatsheets
+    /// Reason of having a dedicated function is to be able to control the method
+    pub fn find(cheatsheets: &[Self], slug: String, lang: String) -> Self {
+        cheatsheets
+            .iter()
+            .find(|x| x.slug == slug && x.lang() == lang)
+            .cloned()
+            .unwrap_or_default()
     }
     pub fn to_markdown(&self) -> String {
         let mut parts = Vec::new();
@@ -76,7 +87,12 @@ impl Cheatsheet {
         format!("/cheatsheets/{}", &self.slug)
     }
     pub fn as_search_meta(&self) -> SearchMetadata {
-        SearchMetadata::new(self.title(), ResourceType::Cheatsheet, self.link_short(), self.lang())
+        SearchMetadata::new(
+            self.title(),
+            ResourceType::Cheatsheet,
+            self.link_short(),
+            self.lang(),
+        )
     }
 }
 
